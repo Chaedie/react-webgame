@@ -1,4 +1,5 @@
 const path = require('path'); // node에서 경로 조작하는 path라는 애가 있다.
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 module.exports = {
   name: 'word-relay-setting',
@@ -10,7 +11,6 @@ module.exports = {
   entry: {
     app: ['./client'],
   }, // 입력
-
   module: {
     rules: [
       {
@@ -28,16 +28,23 @@ module.exports = {
             ],
             '@babel/preset-react',
           ], // plugin의 모음이 preset이다.
+          plugins: ['react-refresh/babel'],
         },
       },
     ],
   }, // 모듈을 적용
-
+  plugins: [new ReactRefreshWebpackPlugin()],
   output: {
     path: path.join(__dirname, 'dist'),
     // path.join 하면 경로를 알아서 합쳐준다.
     // 현재 폴더 안에 있는 dist
     // /react-webgame/2-끝말잇기/dist (현재폴더 안에 있는 dist를 픽해준다.)
     filename: 'app.js',
+    publicPath: '/dist',
   }, // 출력
+  devServer: {
+    devMiddleware: { publicPath: '/dist' },
+    static: { directory: path.resolve(__dirname) },
+    hot: true,
+  },
 };

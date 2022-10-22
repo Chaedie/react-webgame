@@ -22,7 +22,7 @@ function WordRelay() {
   return (
     <>
       <header>
-        <h1>구구단</h1>
+        <h1>끝말잇기</h1>
       </header>
       <main>
         <h3>제시어 : {text}</h3>
