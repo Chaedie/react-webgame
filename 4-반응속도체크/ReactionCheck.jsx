@@ -21,7 +21,6 @@ function ReactionCheck() {
       setState('none');
       return;
     }
-
     saveResult();
   };
 
@@ -44,9 +43,10 @@ function ReactionCheck() {
 
   return (
     <>
-      <h1>리액션 체크!</h1>
+      <ReactionHeader startGame={startGame}></ReactionHeader>
+      {/* <h1>리액션 체크!</h1>
       <button onClick={startGame}>시작버튼!</button>
-      <h2>아쿠아색이 되면 눌러주세요!</h2>
+      <h2>아쿠아색이 되면 눌러주세요!</h2> */}
       <div onClick={onClickBox} className={`gameBox ${state}`}></div>
       {results.length !== 0 && (
         <>
@@ -59,3 +59,14 @@ function ReactionCheck() {
 }
 
 export default ReactionCheck;
+
+// 리셋 될 때 리렌더링을 못 막았다. React.memo만으로 안되나보다. 뭔가 더 공부를 해야 할것같다.
+const ReactionHeader = React.memo(function ReactionHeader({ startGame }) {
+  return (
+    <>
+      <h1>리액션 체크!</h1>
+      <button onClick={startGame}>시작버튼!</button>
+      <h2>아쿠아색이 되면 눌러주세요!</h2>
+    </>
+  );
+});
