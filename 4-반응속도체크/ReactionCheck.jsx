@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 function ReactionCheck() {
-  const [bgColor, setBgColor] = useState('blue');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [startTime, setStartTime] = useState();
-  const [result, setResult] = useState();
+  const [state, setState] = useState('none');
+  const [results, setResults] = useState([]);
+  const timeout = useRef();
+  const startTime = useRef();
 
   const startGame = () => {
-    setIsPlaying(true);
-    setTimeout(() => {
-      setBgColor('aqua');
-      setStartTime(new Date().getTime());
-    }, 1000);
+    setState('waiting');
+    timeout.current = setTimeout(() => {
+      setState('clickable');
+      startTime.current = new Date().getTime();
+    }, Math.floor(Math.random() * 1000) + 1000);
   };
 
   const onClickBox = () => {
+    if (state === 'none') return;
+    if (state === 'waiting') {
+      clearTimeout(timeout.current);
+      setState('none');
+      return;
+    }
+
+    saveResult();
+  };
+
+  const saveResult = () => {
     let endTime = new Date().getTime();
+    setState('none');
+    let result = endTime - startTime.current;
+    setResults(prev => [...prev, result]);
+  };
 
-    if (isPlaying === false) return;
+  const reset = () => {
+    setResults([]);
+    clearTimeout(timeout.current);
+    setState('none');
+  };
 
-    setBgColor('black');
-    setIsPlaying(false);
-    setResult(endTime - startTime + 'ms');
+  const getResultsAvg = () => {
+    return results.reduce((acc, cur) => acc + cur, 0) / results.length || 0;
   };
 
   return (
@@ -29,8 +47,13 @@ function ReactionCheck() {
       <h1>리액션 체크!</h1>
       <button onClick={startGame}>시작버튼!</button>
       <h2>아쿠아색이 되면 눌러주세요!</h2>
-      <div onClick={onClickBox} className={`gameBox ${bgColor}`}></div>
-      <h3>반응 속도 : {result}</h3>
+      <div onClick={onClickBox} className={`gameBox ${state}`}></div>
+      {results.length !== 0 && (
+        <>
+          <h3>평균 반응 속도 : {getResultsAvg()} ms</h3>
+          <button onClick={reset}>리셋</button>
+        </>
+      )}
     </>
   );
 }
