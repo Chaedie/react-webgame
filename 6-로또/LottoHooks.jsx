@@ -1,7 +1,56 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Ball from './Ball';
+import { getWinNumbers } from './getWinNumbers';
 
 function LottoHooks() {
-  return <h1>로또 훅스 자리</h1>;
+  const [winNumbers, setWinNumbers] = useState(getWinNumbers);
+  const [winBalls, setWinBalls] = useState([]);
+  const [bonus, setBonus] = useState(null);
+  const [redo, setRedo] = useState(false);
+
+  const timeouts = useRef([]);
+  const redoFlag = useRef(false);
+
+  const runTimeOuts = () => {
+    for (let i = 0; i < 6; i++) {
+      timeouts.current[i] = setTimeout(() => {
+        setWinBalls(prev => [...prev, winNumbers[i]]);
+      }, (i + 1) * 100);
+    }
+    timeouts.current[6] = setTimeout(() => {
+      setBonus(winNumbers[6]);
+      setRedo(true);
+    }, 700);
+  };
+
+  useEffect(() => {
+    runTimeOuts();
+    return () => timeouts.current.forEach(x => clearTimeout(x));
+  }, [redoFlag.current]);
+
+  const onClickRedo = () => {
+    setWinNumbers(getWinNumbers);
+    setWinBalls([]);
+    setBonus(null);
+    setRedo(false);
+    timeouts.current = [];
+    redoFlag.current = !redoFlag.current;
+  };
+
+  console.log(timeouts.current);
+  return (
+    <>
+      <div>당첨숫자 훅스</div>
+      <div id="결과창">
+        {winBalls.map(x => (
+          <Ball key={x} number={x} />
+        ))}
+      </div>
+      <div>보너스!</div>
+      {bonus && <Ball number={bonus} />}
+      {redo && <button onClick={onClickRedo}>한번 더!</button>}
+    </>
+  );
 }
 
 export default LottoHooks;
