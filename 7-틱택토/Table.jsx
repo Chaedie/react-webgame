@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
+import Tr from './Tr';
 
-class Table extends Component {
-  render() {
-    return <table>{''}</table>;
-  }
+function Table({ tableData, dispatch }) {
+  return (
+    <table>
+      {Array(tableData.length)
+        .fill()
+        .map((tr, i) => (
+          <Tr rowData={tableData[i]} rowIndex={i} dispatch={dispatch} />
+        ))}
+    </table>
+  );
 }
 
 export default Table;
