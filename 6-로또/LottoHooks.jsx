@@ -9,7 +9,6 @@ function LottoHooks() {
   const [redo, setRedo] = useState(false);
 
   const timeouts = useRef([]);
-  const redoFlag = useRef(false);
 
   const runTimeOuts = () => {
     for (let i = 0; i < 6; i++) {
@@ -26,7 +25,7 @@ function LottoHooks() {
   useEffect(() => {
     runTimeOuts();
     return () => timeouts.current.forEach(x => clearTimeout(x));
-  }, [redoFlag.current]);
+  }, [timeouts.current]);
 
   const onClickRedo = () => {
     setWinNumbers(getWinNumbers);
@@ -34,10 +33,8 @@ function LottoHooks() {
     setBonus(null);
     setRedo(false);
     timeouts.current = [];
-    redoFlag.current = !redoFlag.current;
   };
 
-  console.log(timeouts.current);
   return (
     <>
       <div>당첨숫자 훅스</div>
