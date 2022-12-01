@@ -3,9 +3,11 @@ import { CHANGE_TURN, CLICK_CELL } from './TicTacToe';
 
 function Td({ rowIndex, cellIndex, dispatch, cellData }) {
   const onClickTd = useCallback(() => {
+    if (cellData) {
+      return;
+    }
     dispatch({ type: CLICK_CELL, rowIndex, cellIndex });
-    dispatch({ type: CHANGE_TURN });
-  }, []);
+  }, [cellData]);
   return <td onClick={onClickTd}>{cellData}</td>;
 }
 
