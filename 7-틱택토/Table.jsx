@@ -1,16 +1,19 @@
-import React, { Component, useEffect } from 'react';
+import React, { memo } from 'react';
 import Tr from './Tr';
 
 function Table({ tableData, dispatch }) {
+  console.log('table rendered');
   return (
     <table>
-      {Array(tableData.length)
-        .fill()
-        .map((tr, i) => (
-          <Tr rowData={tableData[i]} rowIndex={i} dispatch={dispatch} />
-        ))}
+      <tbody>
+        {Array(tableData.length)
+          .fill()
+          .map((tr, i) => (
+            <Tr key={i} rowData={tableData[i]} rowIndex={i} dispatch={dispatch} />
+          ))}
+      </tbody>
     </table>
   );
 }
 
-export default Table;
+export default memo(Table);
